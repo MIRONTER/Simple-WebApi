@@ -18,7 +18,6 @@ namespace WebApi.Controllers
     public class ValuesController : ControllerBase
     {
         private readonly InfotecsContext _context;
-        private readonly ToolsForSQL _toolsForSQL = new ToolsForSQL();
 
         public ValuesController(InfotecsContext context)
         {
@@ -91,84 +90,29 @@ namespace WebApi.Controllers
         //    return CreatedAtAction(nameof(GetValue), new { id = value.Id }, value);
         //}
 
-        private Value ParseValue(string filename, string[] values)
-        {
-            Value value = new Value
-            {
-                FileName = filename,
-                Date = DateTime.ParseExact(values[0], "yyyy-MM-dd_HH-mm-ss", System.Globalization.CultureInfo.InvariantCulture),
-                Seconds = Convert.ToInt32(values[1]),
-                N = Convert.ToDouble(values[2])
-            };
-            return value;
-        }
 
-        private void UpdateResult(Result result, string filename)
-        {
-            result.AverageSeconds = _context.Values.Where(v => v.FileName == filename).Average(s => s.Seconds);
-            result.AverageN = _context.Values.Where(v => v.FileName == filename).Average(n => n.N);
-            result.MedianN = _toolsForSQL.Median(_context.Values.Where(v => v.FileName == filename).Select(n => n.N));
-            result.MaxN = _context.Values.Where(v => v.FileName == filename).Max(n => n.N);
-            result.MinN = _context.Values.Where(v => v.FileName == filename).Min(n => n.N);
-            result.Count = _context.Values.Where(v => v.FileName == filename).Count();
-            result.MinDate = _context.Values.Where(v => v.FileName == filename).Min(d => d.Date);
-            result.AllTime = (_context.Values.Where(v => v.FileName == filename).Max(d => d.Date) - result.MinDate).Ticks;
-        }
-
-        private bool AddValues(IFormFile file)
-        {
-            int lines = 0;
-            using (StreamReader reader = new StreamReader(file.OpenReadStream()))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    lines++;
-                    string[] values = line.Split(';');
-                    if (values.Length > 0)
-                    {
-                        Value value = ParseValue(file.FileName, values);
-                        if (value.Date < DateTime.Now && value.Date > Convert.ToDateTime("01.01.2000") && value.N >= 0)
-                        {
-                            _context.Values.Add(value);
-                        }
-                    }
-                }
-            }
-            if (lines > 0 && lines <= 10000) { return true; }
-            else { return false; }
-        }
-
-        private async Task<bool> CheckResult(Result result, string filename)
-        {
-            if (result == null)
-            {
-                result = new Result
-                {
-                    FileName = filename,
-                    MinDate = DateTime.Now
-                };
-                return true;
-            }
-            else
-            {
-                List<Value> values = await _context.Values.Where(v => v.FileName == filename).ToListAsync();
-                _context.Values.RemoveRange(values);
-                return false;
-            }
-        }
 
         [HttpPost]
         public async Task<IActionResult> PostValue(IFormFile file)
         {
-            var result = await _context.Results.FindAsync(file.FileName);
-            var newResult = await CheckResult(result, file.FileName);
+            ToolsForSQL tools = new ToolsForSQL(_context);
 
-            if (AddValues(file))
+            var result = await _context.Results.FindAsync(file.FileName);
+            var needNewResult = await tools.CheckResult(result, file.FileName);
+
+            if (tools.AddValues(file))
             {
-                if (newResult) { _context.Results.Add(result); }
+                if (needNewResult)
+                {
+                    result = new Result
+                    {
+                        FileName = file.FileName,
+                        MinDate = DateTime.Now
+                    };
+                    _context.Results.Add(result);
+                }
                 await _context.SaveChangesAsync();
-                UpdateResult(result, file.FileName);
+                tools.UpdateResult(result, file.FileName);
                 await _context.SaveChangesAsync();
                 return Ok();
             }
