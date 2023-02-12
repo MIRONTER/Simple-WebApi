@@ -27,11 +27,13 @@ public partial class InfotecsContext : DbContext
     {
         modelBuilder.Entity<Result>(entity =>
         {
-            entity.HasNoKey();
+            entity.HasKey(e => e.FileName);
 
-            entity.Property(e => e.AllTime)
-                .HasColumnType("datetime")
-                .HasColumnName("allTime");
+            entity.Property(e => e.FileName)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("fileName");
+            entity.Property(e => e.AllTime).HasColumnName("allTime");
             entity.Property(e => e.AverageN).HasColumnName("averageN");
             entity.Property(e => e.AverageSeconds).HasColumnName("averageSeconds");
             entity.Property(e => e.Count).HasColumnName("count");
@@ -55,6 +57,11 @@ public partial class InfotecsContext : DbContext
                 .HasColumnName("fileName");
             entity.Property(e => e.N).HasColumnName("n");
             entity.Property(e => e.Seconds).HasColumnName("seconds");
+
+            entity.HasOne(d => d.FileNameNavigation).WithMany(p => p.Values)
+                .HasForeignKey(d => d.FileName)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Values_Results");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -14,4 +14,6 @@ public partial class Value
     public int Seconds { get; set; }
 
     public double N { get; set; }
+
+    public virtual Result FileNameNavigation { get; set; } = null!;
 }
