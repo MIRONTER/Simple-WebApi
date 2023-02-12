@@ -20,7 +20,7 @@ namespace WebApi.Tools
             return data[data.Length / 2];
         }
 
-        private Value ParseValue(string filename, string[] values)
+        private static Value ParseValue(string filename, string[] values)
         {
             Value value = new Value
             {
@@ -50,7 +50,7 @@ namespace WebApi.Tools
             using (StreamReader reader = new StreamReader(file.OpenReadStream()))
             {
                 string line;
-                while ((line = reader.ReadLine()) != null)
+                while ((line = reader.ReadLine()!) != null)
                 {
                     lines++;
                     string[] values = line.Split(';');
