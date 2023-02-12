@@ -6,8 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<InfotecsContext>(opt =>
-    opt.UseSqlServer("TodoList"));
+builder.Services.AddDbContext<InfotecsContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("Infotecs")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

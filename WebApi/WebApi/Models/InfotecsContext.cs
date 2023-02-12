@@ -20,8 +20,15 @@ public partial class InfotecsContext : DbContext
     public virtual DbSet<Value> Values { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-R6LPKL1\\SQLEXPRESS;Initial Catalog=infotecs; Integrated Security=False;User ID=sa;Password=1234; TrustServerCertificate=True ");
+    {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        var connectionString = configuration.GetConnectionString("Infotecs");
+        optionsBuilder.UseSqlServer(connectionString);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
