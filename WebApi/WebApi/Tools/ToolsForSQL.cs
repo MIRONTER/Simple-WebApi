@@ -12,7 +12,7 @@ namespace WebApi.Tools
             _context = context;
         }
 
-        public double Median(IEnumerable<double> items)
+        private static double Median(IEnumerable<double> items)
         {
             var data = items.OrderBy(n => n).ToArray();
             if (data.Length % 2 == 0)
