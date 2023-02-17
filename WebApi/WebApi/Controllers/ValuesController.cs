@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
-using WebApi.DataAccess.Data;
+using WebApi.DataAccess.Context;
 using WebApi.DataAccess.Models;
 using WebApi.DataAccess.Services;
 
