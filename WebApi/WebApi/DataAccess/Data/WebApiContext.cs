@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using WebApi.DataAccess.Models;
 
-namespace WebApi.Models;
+namespace WebApi.DataAccess.Data;
 
-public partial class InfotecsContext : DbContext
+public partial class WebApiContext : DbContext
 {
-    public InfotecsContext()
+    public WebApiContext()
     {
     }
 
-    public InfotecsContext(DbContextOptions<InfotecsContext> options)
+    public WebApiContext(DbContextOptions<WebApiContext> options)
         : base(options)
     {
     }
@@ -26,7 +27,7 @@ public partial class InfotecsContext : DbContext
             .AddJsonFile("appsettings.json")
             .Build();
 
-        var connectionString = configuration.GetConnectionString("Infotecs");
+        var connectionString = configuration.GetConnectionString("WebApi");
         optionsBuilder.UseSqlServer(connectionString);
     }
 

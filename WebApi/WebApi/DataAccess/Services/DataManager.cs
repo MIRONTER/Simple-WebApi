@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebApi.Models;
+using WebApi.DataAccess.Data;
+using WebApi.DataAccess.Models;
 
-namespace WebApi.Tools
+namespace WebApi.DataAccess.Services
 {
-    public class ToolsForSQL
+    public class DataManager
     {
-        private readonly InfotecsContext _context;
+        private readonly WebApiContext _context;
 
-        public ToolsForSQL(InfotecsContext context)
+        public DataManager(WebApiContext context)
         {
             _context = context;
         }

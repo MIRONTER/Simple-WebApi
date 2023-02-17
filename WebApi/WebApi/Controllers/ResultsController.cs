@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebApi.Models;
+using WebApi.DataAccess.Data;
+using WebApi.DataAccess.Models;
 using WebApi.Tools;
 
 namespace WebApi.Controllers
@@ -14,9 +15,9 @@ namespace WebApi.Controllers
     [ApiController]
     public class ResultsController : ControllerBase
     {
-        private readonly InfotecsContext _context;
+        private readonly WebApiContext _context;
 
-        public ResultsController(InfotecsContext context)
+        public ResultsController(WebApiContext context)
         {
             _context = context;
         }

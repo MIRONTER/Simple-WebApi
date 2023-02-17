@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
-using WebApi.Models;
-using WebApi.Tools;
+using WebApi.DataAccess.Data;
+using WebApi.DataAccess.Models;
+using WebApi.DataAccess.Services;
 
 namespace WebApi.Controllers
 {
@@ -17,9 +18,9 @@ namespace WebApi.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly InfotecsContext _context;
+        private readonly WebApiContext _context;
 
-        public ValuesController(InfotecsContext context)
+        public ValuesController(WebApiContext context)
         {
             _context = context;
         }
@@ -27,7 +28,7 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostValue(IFormFile file)
         {
-            ToolsForSQL tools = new ToolsForSQL(_context);
+            DataManager tools = new DataManager(_context);
 
             Result? result = await _context.Results.FindAsync(file.FileName);
             bool needNewResult = await tools.CheckResult(result!, file.FileName);
