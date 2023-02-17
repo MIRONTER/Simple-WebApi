@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebApi.DataAccess.Data;
+using WebApi.DataAccess.Context;
 using WebApi.DataAccess.Models;
 using WebApi.Tools;
 

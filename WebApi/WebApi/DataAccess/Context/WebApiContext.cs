@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using WebApi.DataAccess.Models;
 
-namespace WebApi.DataAccess.Data;
+namespace WebApi.DataAccess.Context;
 
 public partial class WebApiContext : DbContext
 {
